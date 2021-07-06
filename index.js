@@ -37,7 +37,7 @@ db.once("open", function () {
   console.log("Connected");
 });
 //I have taken keys/Properties of excel files according to me.You can check excel files in this folder to get brief understanding of the properties.
-//In fututre i will change the properties of excel files and keys of  mongoose schema according to the need.
+//In fututre i will change the properties of excel files and keys of mongoose schema according to the need.
 app.post(
   "/upload/excel/data/User",
   upload.single("excel"),
