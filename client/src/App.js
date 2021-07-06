@@ -7,16 +7,18 @@ class App extends Component {
     this.state = {
       select: "User",
       file: {},
+      msg: null,
     };
   }
   handleSelect = (e) => {
     console.log(e.target.value);
-    this.setState({ select: e.target.value });
+    this.setState({ select: e.target.value, msg: null });
   };
   handleFile = (e) => {
     console.log(e.target.files[0]);
     this.setState({
       file: e.target.files[0],
+      msg: null,
     });
   };
   handleSubmit = async (e) => {
@@ -24,22 +26,28 @@ class App extends Component {
     const fd = new FormData();
     fd.append("excel", this.state.file);
     fd.append("category", this.state.select);
+    this.setState({ msg: "Excel Sheet Added Successfully" });
     await axios.post(`/upload/excel/data/${this.state.select}`, fd, {
       withCredentials: true,
       headers: { "Content-Type": "multipart/form-data" },
     });
-    this.forceUpdate();
   };
   render() {
     console.log(this.state);
     return (
       <div className="App App-header">
         <div className="d-flex row container  justify-content-center">
-          <div className="col-8">
+          <div className="col-lg-8 col-sm-10 col-11">
+            {this.state.msg && (
+              <div class="alert alert-warning " role="alert">
+                <p>{this.state.msg}</p>
+              </div>
+            )}
             <form
-              style={{ backgroundColor: "white" }}
-              className="shadow py-3 px-3"
+              style={{ backgroundColor: "white", borderRadius: 15 }}
+              className="shadow py-4 px-4"
             >
+              <h3 className="text-center my-3">Add Your Excel Sheet</h3>
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">
                   Select Excel File
