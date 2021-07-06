@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
@@ -22,8 +25,7 @@ app.use(function (req, res, next) {
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const dbUrl =
-  "mongodb+srv://Ridam:nfPRX59KgubU1tRm@cluster0.c6lne.mongodb.net/ExcelSheets?retryWrites=true&w=majority";
+const dbUrl = process.env.dbUrl || "mongodb://localhost:27017/ExcelDB";
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -102,6 +104,6 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
-app.listen("5000", () => {
+app.listen(process.env.PORT || "5000", () => {
   console.log("Connected");
 });
