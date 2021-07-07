@@ -5,15 +5,10 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      select: "User",
       file: {},
       msg: null,
     };
   }
-  handleSelect = (e) => {
-    console.log(e.target.value);
-    this.setState({ select: e.target.value, msg: null });
-  };
   handleFile = (e) => {
     console.log(e.target.files[0]);
     this.setState({
@@ -25,9 +20,8 @@ class App extends Component {
     e.preventDefault();
     const fd = new FormData();
     fd.append("excel", this.state.file);
-    fd.append("category", this.state.select);
     this.setState({ msg: "Excel Sheet Added Successfully" });
-    await axios.post(`/upload/excel/data/${this.state.select}`, fd, {
+    await axios.post(`/upload/excel/data`, fd, {
       withCredentials: true,
       headers: { "Content-Type": "multipart/form-data" },
     });
@@ -48,22 +42,7 @@ class App extends Component {
               className="shadow py-4 px-4"
             >
               <h3 className="text-center my-3">Add Your Excel Sheet</h3>
-              <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">
-                  Select Excel File
-                </label>
-                <select
-                  class="form-select"
-                  aria-label="Default select example"
-                  onChange={this.handleSelect}
-                >
-                  <option value="User" selected>
-                    User
-                  </option>
-                  <option value="Admin">Admin</option>
-                  <option value="Product">Product</option>
-                </select>
-              </div>
+
               <div class="mb-3">
                 <label for="formFile" class="form-label">
                   Excel File Input

@@ -36,68 +36,47 @@ db.on("error", console.error.bind(console, "connection error:")); //This file wi
 db.once("open", function () {
   console.log("Connected");
 });
-//I have taken keys/Properties of excel files according to me.You can check excel files in this folder to get brief understanding of the properties.
-//In fututre i will change the properties of excel files and keys of mongoose schema according to the need.
-app.post(
-  "/upload/excel/data/User",
-  upload.single("excel"),
-  async (req, res) => {
-    let path = __dirname + "/uploads/" + req.file.filename;
+app.post("/upload/excel/data", upload.single("excel"), async (req, res) => {
+  let path = __dirname + "/uploads/" + req.file.filename;
+  readXlsxFile(path, { sheet: "User" }).then(async (rows) => {
     const arr = [];
-    readXlsxFile(path).then(async (rows) => {
-      rows.forEach((row, idx) => {
-        if (idx != 0) {
-          arr.push({
-            Name: row[0],
-            Mobile: row[1],
-            Age: row[2],
-          });
-        }
-      });
-      await User.insertMany(arr);
+    rows.forEach((row, idx) => {
+      if (idx != 0) {
+        arr.push({
+          Name: row[0],
+          Mobile: row[1],
+          Age: row[2],
+        });
+      }
     });
-  }
-);
-app.post(
-  "/upload/excel/data/Admin",
-  upload.single("excel"),
-  async (req, res) => {
-    let path = __dirname + "/uploads/" + req.file.filename;
+    await User.insertMany(arr);
+  });
+  readXlsxFile(path, { sheet: "Admin" }).then(async (rows) => {
     const arr = [];
-    readXlsxFile(path).then(async (rows) => {
-      rows.forEach((row, idx) => {
-        if (idx != 0) {
-          arr.push({
-            Name: row[0],
-            Mobile: row[1],
-            Age: row[2],
-          });
-        }
-      });
-      await Admin.insertMany(arr);
+    rows.forEach((row, idx) => {
+      if (idx != 0) {
+        arr.push({
+          Name: row[0],
+          Mobile: row[1],
+        });
+      }
     });
-  }
-);
-app.post(
-  "/upload/excel/data/Product",
-  upload.single("excel"),
-  async (req, res) => {
-    let path = __dirname + "/uploads/" + req.file.filename;
+    await Admin.insertMany(arr);
+  });
+  readXlsxFile(path, { sheet: "Products" }).then(async (rows) => {
     const arr = [];
-    readXlsxFile(path).then(async (rows) => {
-      rows.forEach((row, idx) => {
-        if (idx != 0) {
-          arr.push({
-            Name: row[0],
-            Quantity: row[1],
-            Price: row[2],
-          });
-        }
-      });
-      await Product.insertMany(arr);
+    rows.forEach((row, idx) => {
+      if (idx != 0) {
+        arr.push({
+          ProductName: row[0],
+          Image: row[1],
+        });
+      }
     });
-  }
-);
+    await Product.insertMany(arr);
+  });
+});
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
   app.get("*", (req, res) => {
